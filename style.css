@@ -1,0 +1,525 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(to top, #6a85d0, #ffffff); /* Dark blue gradient */
+  color: white; /* Update text color to white for better contrast */
+}
+
+header,
+footer {
+  background-color: #6c8ada; /* Dark blue */
+  color: white;
+  text-align: center;
+  padding: 1rem;
+}
+
+footer .instagram-logo {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: white;
+  font-size: 2rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+footer .instagram-logo:hover {
+  color: #e1306c; /* Instagram pink */
+}
+
+main {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input-section,
+.wheel-section {
+  margin: 1rem 0;
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+}
+
+.wheel-section {
+  background-color: white; /* White background for the box */
+  border-radius: 15px; /* Rounded corners */
+  padding: 2rem; /* Add padding inside the box */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+  text-align: center; /* Center align the content */
+  margin-top: 2rem; /* Add spacing above the box */
+}
+
+.perintahInput {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #1e3a8a; /* Dark blue */
+}
+
+.input-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+input[type='text'] {
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+button {
+  background-color: #2563eb; /* Blue */
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #1d4ed8; /* Darker blue */
+}
+
+#spinButton {
+  margin-top: 2rem; /* Increase margin to create space from the arrow */
+  background-color: #2563eb; /* Blue */
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+#spinButton:hover {
+  background-color: #1d4ed8; /* Darker blue */
+}
+
+#nameList {
+  list-style: none;
+  padding: 0;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+#wheelCanvas {
+  margin: 1rem 0;
+  max-width: 100%;
+}
+
+.wheel-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1rem; /* Add spacing between the wheel and the button */
+}
+
+.arrow-indicator {
+  position: absolute;
+  top: 50%; /* Center vertically relative to the wheel */
+  left: 100%; /* Position to the right of the wheel */
+  transform: translate(10px, -50%); /* Add spacing and center vertically */
+  font-size: 24px;
+  color: #1e3a8a; /* Dark blue */
+  font-weight: bold;
+}
+
+#nameTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+#nameTable th,
+#nameTable td {
+  border: 1px solid #33099d;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+#nameTable th {
+  background-color: #1e3a8a; /* Dark blue */
+  color: white;
+}
+
+#nameTable td {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #93c5fd; /* Light blue for text */
+  text-transform: capitalize;
+  vertical-align: middle; /* Center content vertically */
+}
+
+#nameTable th:first-child,
+#nameTable td:first-child {
+  width: 50px; /* Set a fixed width for the numbering column */
+  text-align: center; /* Center align the numbers */
+}
+
+#nameTable tbody tr:nth-child(odd) {
+  background-color: #1e40af; /* Slightly lighter dark blue */
+}
+
+#nameTable tbody tr:nth-child(even) {
+  background-color: #1e3a8a; /* Dark blue */
+}
+
+#nameTable tbody {
+  display: block;
+  max-height: 8rem; /* Approximately 4 rows */
+  overflow-y: auto;
+}
+
+#nameTable thead,
+#nameTable tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translate(-50%, -150%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToTop {
+  from {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+  to {
+    transform: translate(-50%, -150%);
+    opacity: 0;
+  }
+}
+
+#notificationCard {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -150%);
+  background-color: #2563eb; /* Blue */
+  color: white;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#notificationCard.show {
+  animation: slideInFromTop 0.5s forwards;
+}
+
+#notificationCard.hide {
+  animation: slideOutToTop 0.5s forwards;
+}
+
+#notificationCard.hidden {
+  display: none;
+}
+
+#notificationButton {
+  margin-top: 1rem;
+  background-color: white;
+  color: #2563eb; /* Blue */
+  border: 1px solid #2563eb;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#notificationButton:hover {
+  background-color: #2563eb; /* Blue */
+  color: white;
+}
+
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#overlay.show {
+  opacity: 1;
+}
+
+#overlay.hidden {
+  display: none;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center; /* Center buttons horizontally */
+  gap: 0.5rem;
+}
+
+.action-buttons button {
+  background-color: #ff4d79;
+  color: white;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.action-buttons button:hover {
+  background-color: #e63e6a;
+}
+
+#editCard {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #1e3a8a; /* Dark blue */
+  color: white;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#editCard.show {
+  animation: slideInFromTop 0.5s forwards;
+}
+
+#editCard.hide {
+  animation: slideOutToTop 0.5s forwards;
+}
+
+#editCard.hidden {
+  display: none;
+}
+
+#editInput {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  z-index: 1002; /* Ensure the input is above other elements */
+  position: relative; /* Ensure proper stacking context */
+}
+
+.edit-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.edit-buttons button {
+  flex: 1;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#editOkButton {
+  background-color: #4ade80; /* Green for OK */
+  color: white;
+}
+
+#editOkButton:hover {
+  background-color: #22c55e; /* Darker green */
+}
+
+#editCancelButton {
+  background-color: #ef4444; /* Red for Cancel */
+  color: white;
+}
+
+#editCancelButton:hover {
+  background-color: #dc2626; /* Darker red */
+}
+
+#expandedCard {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #1e3a8a; /* Dark blue */
+  color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  display: none;
+  width: 80%;
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+#expandedCard.show {
+  display: block;
+}
+
+.expanded-content {
+  text-align: center;
+}
+
+#expandedList {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+#expandedList li {
+  padding: 0.5rem;
+  border-bottom: 1px solid #ccc;
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+#collapseButton {
+  background-color: #ef4444; /* Red for collapse */
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+#collapseButton:hover {
+  background-color: #dc2626; /* Darker red */
+}
+
+#expandButton {
+  margin-top: 1rem; /* Add spacing between the button and the table */
+}
+
+.notes-section {
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+  background-color: white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.notes-section h2 {
+  font-size: 1.5rem;
+  color: #1e3a8a; /* Dark blue */
+  margin-bottom: 1rem;
+}
+
+#spinNotes {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  resize: none;
+}
+
+#saveNotesButton {
+  background-color: #2563eb; /* Blue */
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+#saveNotesButton:hover {
+  background-color: #1d4ed8; /* Darker blue */
+}
+
+#notesNotification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background-color: #2563eb; /* Blue */
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  z-index: 1001;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#notesNotification.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+#notesNotification.hide {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.8);
+}
+
+.logo-section {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.logo-placeholder {
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+  background-color: #f3f4f6; /* Light gray background */
+  border: 2px dashed #1e3a8a; /* Dashed border for placeholder */
+  border-radius: 50%; /* Circular placeholder */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* Ensure the image stays within the circle */
+}
+
+.logo-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure the image covers the placeholder */
+  border-radius: 50%; /* Match the circular shape of the placeholder */
+}

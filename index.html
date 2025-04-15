@@ -1,0 +1,85 @@
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spin Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <nav class="navbar sticky-top bg-body-tertiary shadow">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-bolder" href="#">LartzSpin</a>
+      </div>
+    </nav>
+    <main>
+      <section class="logo-section">
+        <div class="logo-placeholder">
+          <img src="./assets/img/lartz-logo-col.png" alt="Logo" class="logo" />
+        </div>
+      </section>
+      <section class="input-section">
+        <p class="perintahInput">Masukkan nama atau angka, satu per satu:</p>
+        <div class="input-group">
+          <input type="text" id="nameInput" placeholder="Nama atau Angka" />
+          <button id="addName">Tambah</button>
+        </div>
+        <table id="nameTable">
+          <thead>
+            <tr>
+              <th>No</th>
+              <!-- Add column for numbering -->
+              <th>Nama atau Angka</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="nameList"></tbody>
+        </table>
+        <button id="expandButton">🔍</button>
+        <!-- Add expand button -->
+      </section>
+
+      <div id="expandedCard" class="hidden">
+        <div class="expanded-content">
+          <h2>Daftar Nama atau Angka</h2>
+          <ul id="expandedList"></ul>
+          <button id="collapseButton">Perkecil</button>
+          <!-- Add collapse button -->
+        </div>
+      </div>
+
+      <section class="wheel-section">
+        <div class="wheel-container">
+          <div class="arrow-indicator">◀</div>
+          <canvas id="wheelCanvas" width="400" height="400"></canvas>
+        </div>
+        <button id="spinButton">Putar</button>
+      </section>
+      <div id="overlay" class="hidden"></div>
+      <div id="notificationCard" class="hidden">
+        <p id="notificationText"></p>
+        <button id="notificationButton">OK</button>
+      </div>
+      <div id="editCard" class="hidden">
+        <p>Edit Nama atau Angka:</p>
+        <input type="text" id="editInput" />
+        <div class="edit-buttons">
+          <button id="editOkButton">OK</button>
+          <button id="editCancelButton">Cancel</button>
+        </div>
+      </div>
+      <section class="notes-section">
+        <h2>Catatan Hasil Spin</h2>
+        <textarea id="spinNotes" placeholder="Tulis catatan di sini..." rows="5"></textarea>
+        <button id="saveNotesButton">Simpan Catatan</button>
+      </section>
+      <div id="notesNotification" class="hidden">Catatan berhasil disalin ke clipboard!</div>
+    </main>
+    <footer>
+      <p>&copy; 2025 Spin Generator by lartz</p>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>
