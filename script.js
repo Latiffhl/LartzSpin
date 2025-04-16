@@ -35,7 +35,7 @@ function drawWheel() {
     ctx.save();
     ctx.rotate(start + step / 2);
     ctx.textAlign = 'right';
-    ctx.fillStyle = '#000';
+    ctx.fillStyle = '#ffffff'; // Change text color to white
     ctx.font = 'bold 14px sans-serif';
     ctx.fillText(names[i], radius - 10, 5);
     ctx.restore();
@@ -76,19 +76,22 @@ function showNotification(message) {
   overlay.classList.remove('hidden');
   overlay.classList.add('show');
 
-  notificationButton.addEventListener(
-    'click',
-    () => {
-      notificationCard.classList.remove('show');
-      notificationCard.classList.add('hide');
-      overlay.classList.remove('show');
-      setTimeout(() => {
-        notificationCard.classList.add('hidden');
-        overlay.classList.add('hidden');
-      }, 500); // Match the duration of the slide-out animation
-    },
-    { once: true }
-  );
+  const closeNotificationCard = () => {
+    notificationCard.classList.remove('show');
+    notificationCard.classList.add('hide');
+    overlay.classList.remove('show');
+    setTimeout(() => {
+      notificationCard.classList.add('hidden');
+      overlay.classList.add('hidden');
+    }, 500);
+  };
+
+  // Close on overlay click
+  overlay.onclick = closeNotificationCard;
+  // Close on button click
+  notificationButton.onclick = closeNotificationCard;
+  // Prevent closing when clicking inside the card
+  notificationCard.onclick = (e) => e.stopPropagation();
 }
 
 function drawAnimatedWheel() {
@@ -111,7 +114,7 @@ function drawAnimatedWheel() {
     ctx.save();
     ctx.rotate(start + step / 2);
     ctx.textAlign = 'right';
-    ctx.fillStyle = '#000';
+    ctx.fillStyle = '#ffffff'; // Change text color to white
     ctx.font = 'bold 14px sans-serif';
     ctx.fillText(names[i], radius - 10, 5);
     ctx.restore();
@@ -150,12 +153,13 @@ function renderNameList() {
     expandButton.style.display = 'inline-block'; // Show the expand button if inputs exist
   }
 
+  const fragment = document.createDocumentFragment(); // Use a fragment for efficient DOM updates
   names.forEach((n, index) => {
     const tr = document.createElement('tr');
 
     const tdNumber = document.createElement('td'); // Add numbering column
     tdNumber.textContent = index + 1; // Number starts from 1
-    tdNumber.style.fontWeight = 'bold'; // Optional: Make the number bold
+    tdNumber.style.fontWeight = 'bold';
 
     const tdName = document.createElement('td');
     tdName.textContent = n;
@@ -174,11 +178,13 @@ function renderNameList() {
     tdActions.appendChild(editButton);
     tdActions.appendChild(deleteButton);
 
-    tr.appendChild(tdNumber); // Append numbering column
+    tr.appendChild(tdNumber);
     tr.appendChild(tdName);
     tr.appendChild(tdActions);
-    nameList.appendChild(tr);
+    fragment.appendChild(tr);
   });
+
+  nameList.appendChild(fragment); // Append all rows at once
 }
 
 function editName(index) {
@@ -188,41 +194,39 @@ function editName(index) {
   const editCancelButton = document.getElementById('editCancelButton');
   const overlay = document.getElementById('overlay');
 
-  // Show the edit card with animation
   editCard.classList.remove('hidden', 'hide');
   editCard.classList.add('show');
   overlay.classList.remove('hidden');
   overlay.classList.add('show');
-  editInput.value = names[index]; // Populate the input with the current name or number
-  editInput.focus(); // Focus the input field for editing
+  editInput.value = names[index];
+  editInput.focus();
 
-  // Handle OK button click
-  const handleOkClick = () => {
-    const newName = editInput.value.trim();
-    if (newName !== '') {
-      names[index] = newName; // Update the name or number in the array
-      renderNameList(); // Re-render the name list
-      drawWheel(); // Redraw the wheel to reflect changes
-    }
-    closeEditCard();
-  };
-
-  // Handle Cancel button click
-  const handleCancelClick = closeEditCard;
-
-  // Attach event listeners
-  editOkButton.addEventListener('click', handleOkClick, { once: true });
-  editCancelButton.addEventListener('click', handleCancelClick, { once: true });
-
-  function closeEditCard() {
+  const closeEditCard = () => {
     editCard.classList.remove('show');
     editCard.classList.add('hide');
     overlay.classList.remove('show');
-    overlay.classList.add('hidden');
     setTimeout(() => {
       editCard.classList.add('hidden');
-    }, 500); // Match the duration of the slide-out animation
-  }
+      overlay.classList.add('hidden');
+    }, 500);
+  };
+
+  // Close on overlay click
+  overlay.onclick = closeEditCard;
+  // Close on cancel button
+  editCancelButton.onclick = closeEditCard;
+  // Prevent closing when clicking inside the card
+  editCard.onclick = (e) => e.stopPropagation();
+
+  editOkButton.onclick = () => {
+    const newName = editInput.value.trim();
+    if (newName !== '') {
+      names[index] = newName;
+      renderNameList();
+      drawWheel();
+    }
+    closeEditCard();
+  };
 }
 
 function deleteName(index) {
@@ -230,45 +234,33 @@ function deleteName(index) {
   const notificationCard = document.getElementById('notificationCard');
   const notificationText = document.getElementById('notificationText');
   const notificationButton = document.getElementById('notificationButton');
-  const cancelButton = document.createElement('button'); // Create a Cancel button
 
-  // Show confirmation modal
   notificationText.textContent = `Apakah Anda yakin ingin menghapus "${names[index]}"?`;
   notificationCard.classList.remove('hidden', 'hide');
   notificationCard.classList.add('show');
   overlay.classList.remove('hidden');
 
-  // Add Cancel button to the notification card
-  cancelButton.textContent = 'Cancel';
-  cancelButton.style.marginLeft = '10px';
-  cancelButton.style.backgroundColor = '#f44336';
-  cancelButton.style.color = 'white';
-  cancelButton.style.border = 'none';
-  cancelButton.style.padding = '0.5rem 1rem';
-  cancelButton.style.borderRadius = '8px';
-  cancelButton.style.cursor = 'pointer';
-  cancelButton.style.fontSize = '1rem';
-  cancelButton.style.fontWeight = 'bold';
-  cancelButton.style.transition = 'background-color 0.3s ease';
-  notificationCard.appendChild(cancelButton);
-
-  // Handle OK button click
-  notificationButton.onclick = () => {
-    names.splice(index, 1); // Remove the selected name or number from the array
-    renderNameList(); // Re-render the table
-    drawWheel(); // Redraw the wheel to reflect changes
-    closeNotificationCard();
-  };
-
-  // Handle Cancel button click
-  cancelButton.onclick = closeNotificationCard;
-
-  function closeNotificationCard() {
+  const closeDeleteCard = () => {
     notificationCard.classList.remove('show');
     notificationCard.classList.add('hide');
-    overlay.classList.add('hidden');
-    cancelButton.remove(); // Remove the Cancel button after closing
-  }
+    overlay.classList.remove('show');
+    setTimeout(() => {
+      notificationCard.classList.add('hidden');
+      overlay.classList.add('hidden');
+    }, 500);
+  };
+
+  // Close on overlay click
+  overlay.onclick = closeDeleteCard;
+  // Close on button click
+  notificationButton.onclick = () => {
+    names.splice(index, 1);
+    renderNameList();
+    drawWheel();
+    closeDeleteCard();
+  };
+  // Prevent closing when clicking inside the card
+  notificationCard.onclick = (e) => e.stopPropagation();
 }
 
 expandButton.addEventListener('click', () => {
@@ -298,7 +290,7 @@ saveNotesButton.addEventListener('click', () => {
     navigator.clipboard
       .writeText(notes)
       .then(() => {
-        // Show notification
+     
         notesNotification.classList.remove('hidden', 'hide');
         notesNotification.classList.add('show');
         setTimeout(() => {
@@ -306,9 +298,9 @@ saveNotesButton.addEventListener('click', () => {
           notesNotification.classList.add('hide');
           setTimeout(() => {
             notesNotification.classList.add('hidden');
-          }, 300); // Match the hide animation duration
-        }, 2000); // Show notification for 2 seconds
-        spinNotes.value = ''; // Clear the textarea after saving
+          }, 300); 
+        }, 2000); 
+        spinNotes.value = ''; 
       })
       .catch(() => {
         alert('Gagal menyalin catatan ke clipboard.');
